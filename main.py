@@ -1,5 +1,8 @@
+import src.loader
+
 def main():
-    print("coucou")
+    ingest_file = loader()
+
 
 if __name__ == "__main__":
     main()
