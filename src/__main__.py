@@ -2,16 +2,8 @@ import os
 import time
 import fire
 
-def add(x, y):
-  return x + y
-
-
-def multiply(x, y):
-  return x * y
-
-
 def main():
-    fire.Fire()
+    print("Prout")
 
 
 if __name__ == "__main__":
@@ -30,4 +22,4 @@ if __name__ == "__main__":
 #                 continue
 #             file.read_text()
 #     except Exception:
-        
+#         pass
