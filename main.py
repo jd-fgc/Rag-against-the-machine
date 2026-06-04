@@ -1,9 +1,5 @@
-import src.loader
-import os
-import time
-
 def main():
-    ingest_file = loader()
+    print("Hello from rag!")
 
 
 if __name__ == "__main__":
