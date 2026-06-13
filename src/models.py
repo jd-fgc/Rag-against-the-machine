@@ -2,6 +2,13 @@ from pydantic import BaseModel, Field
 from typing import List
 import uuid
 
+class Chunk(BaseModel):
+    file_path: str
+    first_character_index: int
+    last_character_index: int
+    text: str
+    chunk_type: str
+
 
 class MinimalSource(BaseModel):
     file_path: str
