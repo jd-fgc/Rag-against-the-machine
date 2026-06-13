@@ -26,5 +26,32 @@ def chunk_python(file_path : str, text : str, max_chunk_size : int) -> List[Chun
     return chunks
 
 
-# def chunk_markdown(file_path : str, text : str, max_chunk_size : int) -> List[Chunk]:
-#     pass
+def chunk_markdown(file_path : str, text : str, max_chunk_size : int) -> List[Chunk]:
+    chunks = []
+    lines = text.split("\n")
+    section_start = 0
+    cursor = 0
+
+    for i, line in enumerate(lines):
+        if line.startswith("#") and i > 0:
+            start = section_start
+            end = cursor
+            chunks.append(Chunk(
+                file_path=file_path,
+                first_character_index=start,
+                last_character_index=end,
+                text=text[start:end],
+                chunk_type="markdown"
+            ))
+            section_start = cursor
+            pass
+        cursor += len(line) + 1
+        if section_start < len(text):
+            chunks.append(Chunk(
+                file_path=file_path,
+                first_character_index=section_start,
+                last_character_index=len(text),
+                text=text[section_start:],
+                chunk_type="markdown"
+            ))
+    return chunks
