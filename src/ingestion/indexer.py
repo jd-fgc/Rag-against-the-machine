@@ -1,4 +1,7 @@
+from typing import List
 from pathlib import Path
+from models import Chunk
+import json
 
 
 SKIP_DIRS = {"__pycache__", ".git", "tests", "build", "dist", "benchmarks"}
@@ -20,3 +23,9 @@ def loader_file():
         if file_path.suffix in {".py", ".md"}:
             text = file_path.read_text(encoding="utf-8", errors="ignore")
             yield file_path, text
+
+
+def save_chunks(chunks: List[Chunk], output_path: str) -> None:
+    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+    with open(output_path, "w") as f:
+        json.dump([chunk.model_dump() for chunk in chunks], f)
