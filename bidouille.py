@@ -7,7 +7,7 @@ import ast
 def main():
     tree = ast.parse('print("hello World")')
     code_obj = compile(tree, filename="<ast>", mode="exec")
-    
+
     exec(code_obj)
 
     # model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen3-0.6B")

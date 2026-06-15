@@ -1,8 +1,30 @@
-from ingestion.indexer import loader_file, save_chunks
-from ingestion.chunker import chunk_python, chunk_markdown
+from ingestion.chunker import chunk_python, chunk_markdown, save_chunks
+from ingestion.indexer import build_indexes
+from pathlib import Path
 # import os
 # import time
 # import fire
+
+
+SKIP_DIRS = {"__pycache__", ".git", "tests", "build", "dist", "benchmarks"}
+
+
+def loader_file():
+    repo = Path("data/raw/vllm-0.10.1")
+    seen = set()
+
+    for file_path in repo.rglob("*"):
+        if any(part in SKIP_DIRS for part in file_path.parts):
+            continue
+        if not file_path.is_file():
+            continue
+        real_path = file_path.resolve()
+        if real_path in seen:
+            continue
+        seen.add(real_path)
+        if file_path.suffix in {".py", ".md"}:
+            text = file_path.read_text(encoding="utf-8", errors="ignore")
+            yield file_path, text
 
 
 def main():
@@ -12,6 +34,7 @@ def main():
         output_python = "data/processed/chunks/python_chunks.json"
         output_markdown = "data/processed/chunks/markdown_chunks.json"
 
+        # Load and chunk vllm folder
         for file_path, text in loader_file():
             if file_path.suffix == ".py":
                 chunks = chunk_python(str(file_path), text, 2000)
@@ -22,12 +45,15 @@ def main():
         save_chunks(python_chunks, output_python)
         save_chunks(markdown_chunks, output_markdown)
 
-        # Debug
-        print(f"Python chunks: {len(python_chunks)}")
-        print(f"Markdown chunks: {len(markdown_chunks)}")
-        gros = [c for c in markdown_chunks if len(c.text) > 2000]
-        print(f"Chunks > 2000 chars: {len(gros)}")
-        print(f"Taille max: {max(len(c.text) for c in markdown_chunks)}")
+        # Indexing
+        build_indexes()
+
+        # # Debug
+        # print(f"Python chunks: {len(python_chunks)}")
+        # print(f"Markdown chunks: {len(markdown_chunks)}")
+        # gros = [c for c in markdown_chunks if len(c.text) > 2000]
+        # print(f"Chunks > 2000 chars: {len(gros)}")
+        # print(f"Taille max: {max(len(c.text) for c in markdown_chunks)}")
     except Exception:
         raise Exception
 

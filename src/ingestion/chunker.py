@@ -1,9 +1,17 @@
 from typing import List
-from models import Chunk
+from models import MinimalSource
+from pathlib import Path
 import ast
+import json
 
 
-def chunk_python(file_path: str, text: str, max_chunk_size: int) -> List[Chunk]:
+def save_chunks(chunks: List[MinimalSource], output_path: str) -> None:
+    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+    with open(output_path, "w") as f:
+        json.dump([chunk.model_dump() for chunk in chunks], f, indent=4)
+
+
+def chunk_python(file_path: str, text: str, max_chunk_size: int) -> List[MinimalSource]:
     chunks = []
     tree = ast.parse(text)
 
@@ -16,7 +24,7 @@ def chunk_python(file_path: str, text: str, max_chunk_size: int) -> List[Chunk]:
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
             start = offsets[node.lineno - 1]
             end = offsets[node.end_lineno - 1] + node.end_col_offset
-            chunks.append(Chunk(
+            chunks.append(MinimalSource(
                 file_path=file_path,
                 first_character_index=start,
                 last_character_index=end,
@@ -26,7 +34,7 @@ def chunk_python(file_path: str, text: str, max_chunk_size: int) -> List[Chunk]:
     return chunks
 
 
-def chunk_markdown(file_path: str, text: str, max_chunk_size: int) -> List[Chunk]:
+def chunk_markdown(file_path: str, text: str, max_chunk_size: int) -> List[MinimalSource]:
     chunks = []
     lines = text.split("\n")
     section_start = 0
@@ -37,7 +45,7 @@ def chunk_markdown(file_path: str, text: str, max_chunk_size: int) -> List[Chunk
             start = section_start
             end = cursor
             if (end - start) <= max_chunk_size:
-                chunks.append(Chunk(
+                chunks.append(MinimalSource(
                     file_path=file_path,
                     first_character_index=start,
                     last_character_index=end,
@@ -50,7 +58,7 @@ def chunk_markdown(file_path: str, text: str, max_chunk_size: int) -> List[Chunk
                 for paragraph in paragraphs:
                     if paragraph.strip():
                         if len(paragraph) <= max_chunk_size:
-                            chunks.append(Chunk(
+                            chunks.append(MinimalSource(
                                 file_path=file_path,
                                 first_character_index=local_cursor,
                                 last_character_index=local_cursor + len(paragraph),
@@ -61,7 +69,7 @@ def chunk_markdown(file_path: str, text: str, max_chunk_size: int) -> List[Chunk
                             p_cursor = 0
                             while p_cursor < len(paragraph):
                                 chunk_text = paragraph[p_cursor:p_cursor + max_chunk_size]
-                                chunks.append(Chunk(
+                                chunks.append(MinimalSource(
                                     file_path=file_path,
                                     first_character_index=local_cursor + p_cursor,
                                     last_character_index=local_cursor + p_cursor + len(chunk_text),
@@ -74,7 +82,7 @@ def chunk_markdown(file_path: str, text: str, max_chunk_size: int) -> List[Chunk
             pass
         cursor += len(line) + 1
     if section_start < len(text):
-        chunks.append(Chunk(
+        chunks.append(MinimalSource(
             file_path=file_path,
             first_character_index=section_start,
             last_character_index=len(text),
