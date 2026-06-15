@@ -46,7 +46,7 @@ def main():
         save_chunks(markdown_chunks, output_markdown)
 
         # Indexing
-        build_indexes()
+        build_indexes("data/processed")
 
         # # Debug
         # print(f"Python chunks: {len(python_chunks)}")

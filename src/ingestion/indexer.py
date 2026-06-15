@@ -11,4 +11,12 @@ def build_indexes(output_dir: str):
     corpus_python = [chunk["text"] for chunk in python_chunks]
     corpus_markdown = [chunk["text"] for chunk in markdown_chunk]
 
-    
+    retriever_python = bm25s.BM25()
+    retriever_python.index(bm25s.tokenize(corpus_python))
+    retriever_markdown = bm25s.BM25()
+    retriever_markdown.index(bm25s.tokenize(corpus_markdown))
+
+    retriever_python.save("data/processed/bm25_index/python")
+    retriever_markdown.save("data/processed/bm25_index/markdown")
+
+
