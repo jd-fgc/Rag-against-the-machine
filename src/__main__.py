@@ -1,5 +1,6 @@
 from ingestion.chunker import chunk_python, chunk_markdown, save_chunks
 from ingestion.indexer import build_indexes
+# from retrieval.searcher import 
 from pathlib import Path
 # import os
 # import time
@@ -47,6 +48,8 @@ def main():
 
         # Indexing
         build_indexes("data/processed")
+
+        # Retrieval
 
         # # Debug
         # print(f"Python chunks: {len(python_chunks)}")
