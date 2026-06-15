@@ -4,7 +4,7 @@ import json
 import bm25s
 
 
-def search_query(query: List, index_dir: int, k, index_type: str):
+def search_query(query: str, index_dir: str, k: int, index_type: str) -> List[MinimalSource]:
     with open('data/processed/chunks/python_chunks.json', 'r') as f:
         python_chunks = json.load(f)
     with open('data/processed/chunks/markdown_chunks.json') as f:
