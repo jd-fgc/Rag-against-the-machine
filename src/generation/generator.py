@@ -1,7 +1,16 @@
 
+def 
 
 
-
+# inputs = tokenizer(prompt, return_tensors="pt").to("cuda")
+# outputs = model.generate(
+#     **inputs,
+#     max_new_tokens=200,
+#     do_sample=False
+# )
+# response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+# Le flux c'est :
+# prompt (str) → tokenizer → tenseurs → model.generate → tokens → tokenizer.decode → réponse (str)
 
 # fonction answer_query(query, index_dir, k, index_type):
 
