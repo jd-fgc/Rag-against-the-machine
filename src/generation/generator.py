@@ -16,6 +16,18 @@ def load_model():
     )
     return model, tokenizer
 
+# Method pour le PC Portable
+# def load_model():
+#     model_name = "Qwen/Qwen3-0.6B"
+#     device = "cuda" if torch.cuda.is_available() else "cpu"
+#     tokenizer = AutoTokenizer.from_pretrained(model_name)
+#     model = AutoModelForCausalLM.from_pretrained(
+#         model_name,
+#         dtype=torch.float16 if device == "cuda" else torch.float32,
+#         device_map=device
+#     )
+#     return model, tokenizer
+
 
 def generate_answer(prompt: str, model, tokenizer) -> str:
     inputs = tokenizer.apply_chat_template(
