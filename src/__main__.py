@@ -2,7 +2,7 @@ from ingestion.chunker import chunk_python, chunk_markdown, save_chunks
 from ingestion.indexer import build_indexes
 from retrieval.searcher import search_dataset
 from evaluation.evaluator import evaluate
-from generation.generator import load_model, answer_query
+from generation.generator import load_model, answer_query, answer_data_set
 from pathlib import Path
 # import os
 # import time
@@ -79,6 +79,10 @@ def main():
             tokenizer=tokenizer
         )
         print(response)
+        answer_data_set(
+            student_search_results_path="data/output/search_results/dataset_docs_public.json",
+            save_directory="data/output/search_results_and_answer"
+        )
 
         # Debug
         # print(f"Python chunks: {len(python_chunks)}")

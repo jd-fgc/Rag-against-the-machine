@@ -1,7 +1,9 @@
+from models import MinimalAnswer, StudentSearchResultsAndAnswer
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from retrieval.searcher import search_query
 from pathlib import Path
 import torch
+import json
 
 
 def load_model():
@@ -32,11 +34,10 @@ def generate_answer(prompt: str, model, tokenizer) -> str:
     generated_tokens = outputs[0][input_length:]
     response = tokenizer.decode(generated_tokens, skip_special_tokens=True)
     return response.strip()
-    return response
 
 
 def answer_query(query: str, index_dir: str, k: int, index_type: str, model, tokenizer) -> str:
-    sources = sources = search_query(query, index_dir, k, index_type)
+    sources = search_query(query, index_dir, k, index_type)
     context_parts = []
     for source in sources:
         text = Path(source.file_path).read_text(encoding="utf-8", errors="ignore")
@@ -54,17 +55,39 @@ def answer_query(query: str, index_dir: str, k: int, index_type: str, model, tok
 
 
 def answer_data_set(student_search_results_path, save_directory):
-    
+    model, tokenizer = load_model()
+    with open(student_search_results_path) as f:
+        results_search = json.load(f)
+    answers = []
+    for result in results_search["search_results"]:
+        context_parts = []
+        for source in result["retrieved_sources"]:
+            file_text = Path(source["file_path"]).read_text(encoding="utf-8", errors="ignore")
+            chunk_text = file_text[source["first_character_index"]:source["last_character_index"]]
+            context_parts.append(chunk_text)
+        context = "\n\n".join(context_parts)
+        prompt = f"""Answer the following question based only on the context provided. Be concise.
 
+        Context:
+        {context}
 
-# fonction answer_dataset(student_search_results_path, save_directory):
+        Question: {result["question"]}
+        Answer:"""
+        answer = generate_answer(prompt, model, tokenizer)
 
-#     1. charger le modèle une seule fois
-#     2. charger le fichier search_results JSON
-#     3. pour chaque résultat :
-#            récupérer le texte des sources (comme dans answer_query)
-#            construire le prompt
-#            générer la réponse
-#            construire un MinimalAnswer
-#     4. construire StudentSearchResultsAndAnswer
-#     5. sauvegarder en JSON
+        answers.append(MinimalAnswer(
+            question_id=result["question_id"],
+            question=result["question"],
+            retrieved_sources=result["retrieved_sources"],
+            answer=answer
+        ))
+        break
+    output = StudentSearchResultsAndAnswer(
+        search_results=answers,
+        k=results_search["k"]
+    )
+    Path(save_directory).mkdir(parents=True, exist_ok=True)
+    output_path = Path(save_directory) / Path(student_search_results_path).name
+    with open(output_path, "w") as f:
+        f.write(output.model_dump_json(indent=2))
+    print(f"Saved to {output_path}")
