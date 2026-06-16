@@ -6,3 +6,9 @@
 - [ ] rechercher dans la base de données et extraire le code ou documentation pertinents avec la question (BM25)
 - [ ] Répondre a la question en utilisant le LLM en tenant compte du context
 - [ ] utiliser le recall ?
+
+
+dataset["rag_questions"]
+question["question_id"]
+question["question"]   
+

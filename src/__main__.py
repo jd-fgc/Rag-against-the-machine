@@ -1,6 +1,6 @@
 from ingestion.chunker import chunk_python, chunk_markdown, save_chunks
 from ingestion.indexer import build_indexes
-# from retrieval.searcher import 
+from retrieval.searcher import search_query, search_dataset
 from pathlib import Path
 # import os
 # import time
@@ -50,6 +50,22 @@ def main():
         build_indexes("data/processed")
 
         # Retrieval
+        search_dataset(
+            dataset_path="data/datasets/UnansweredQuestions/dataset_docs_public.json",
+            index_dir="data/processed",
+            k=10,
+            save_directory="data/output/search_results",
+            index_type="markdown"
+        )
+
+        # Evaluation
+        from evaluation.evaluator import evaluate
+        evaluate(
+            student_answer_path="data/output/search_results/dataset_docs_public.json",
+            dataset_path="data/datasets/AnsweredQuestions/dataset_docs_public.json",
+            k=10,
+            max_context_length=2000
+        )
 
         # # Debug
         # print(f"Python chunks: {len(python_chunks)}")

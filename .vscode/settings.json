@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "/home/jd/Dev/Cercle 4/RAG/data/raw/vllm-0.10.1"
+    "cmake.sourceDirectory": "/home/jd/Dev/Cercle 4/RAG/data/raw/vllm-0.10.1",
+    "python.REPL.enableREPLSmartSend": false
 }
