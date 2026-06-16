@@ -1,9 +1,9 @@
 from ingestion.chunker import chunk_python, chunk_markdown, save_chunks
 from ingestion.indexer import build_indexes
 from retrieval.searcher import search_dataset
+from evaluation.evaluator import evaluate
+from generation.generator import load_model, answer_query
 from pathlib import Path
-from transformers import AutoTokenizer, AutoModelForCausalLM
-import torch
 # import os
 # import time
 # import fire
@@ -61,7 +61,6 @@ def main():
         )
 
         # Evaluation
-        from evaluation.evaluator import evaluate
         evaluate(
             student_answer_path="data/output/search_results/dataset_docs_public.json",
             dataset_path="data/datasets/AnsweredQuestions/dataset_docs_public.json",
@@ -70,14 +69,16 @@ def main():
         )
 
         # LLM
-        model_name = "Qwen/Qwen3-0.6B"
-
-        tokenizer = AutoTokenizer.from_pretrained(model_name)
-        model = AutoModelForCausalLM.from_pretrained(
-            model_name,
-            torch_dtype=torch.float16,
-            device_map="cuda"
+        model, tokenizer = load_model()
+        response = answer_query(
+            query="How does vLLM handle batching?",
+            index_dir="data/processed",
+            k=5,
+            index_type="both",
+            model=model,
+            tokenizer=tokenizer
         )
+        print(response)
 
         # Debug
         # print(f"Python chunks: {len(python_chunks)}")
