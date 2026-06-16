@@ -1,7 +1,9 @@
 from ingestion.chunker import chunk_python, chunk_markdown, save_chunks
 from ingestion.indexer import build_indexes
-from retrieval.searcher import search_query, search_dataset
+from retrieval.searcher import search_dataset
 from pathlib import Path
+from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch
 # import os
 # import time
 # import fire
@@ -63,11 +65,21 @@ def main():
         evaluate(
             student_answer_path="data/output/search_results/dataset_docs_public.json",
             dataset_path="data/datasets/AnsweredQuestions/dataset_docs_public.json",
-            k=10,
+            k=20,
             max_context_length=2000
         )
 
-        # # Debug
+        # LLM
+        model_name = "Qwen/Qwen3-0.6B"
+
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        model = AutoModelForCausalLM.from_pretrained(
+            model_name,
+            torch_dtype=torch.float16,
+            device_map="cuda"
+        )
+
+        # Debug
         # print(f"Python chunks: {len(python_chunks)}")
         # print(f"Markdown chunks: {len(markdown_chunks)}")
         # gros = [c for c in markdown_chunks if len(c.text) > 2000]

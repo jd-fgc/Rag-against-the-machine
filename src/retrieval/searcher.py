@@ -69,15 +69,3 @@ def search_dataset(dataset_path, index_dir, k, save_directory, index_type):
     output_path = Path(save_directory) / Path(dataset_path).name
     with open(output_path, "w") as f:
         f.write(output.model_dump_json(indent=2))
-
-
-
-# fonction search_dataset(dataset_path, index_dir, k, save_directory, index_type):
-
-#     1. charger une fois les chunks et les index BM25
-#     2. lire le dataset JSON (liste de questions)
-#     3. pour chaque question :
-#            appeler search_query()
-#            construire un MinimalSearchResults
-#     4. construire un StudentSearchResults avec toute la liste
-#     5. sauvegarder en JSON dans save_directory
