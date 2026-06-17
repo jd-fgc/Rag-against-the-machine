@@ -2,6 +2,7 @@ from src.models import MinimalAnswer, StudentSearchResultsAndAnswer
 from src.retrieval.searcher import search_query
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from pathlib import Path
+from tqdm import tqdm
 import torch
 import json
 
@@ -37,16 +38,19 @@ def generate_answer(prompt: str, model, tokenizer) -> str:
         enable_thinking=False,
         return_tensors="pt"
     ).to(device)
-    outputs = model.generate(
-        **inputs,
-        max_new_tokens=200,
-        do_sample=False,
-        repetition_penalty=1.3
-    )
-    input_length = inputs["input_ids"].shape[1]
-    generated_tokens = outputs[0][input_length:]
-    response = tokenizer.decode(generated_tokens, skip_special_tokens=True)
-    return response.strip()
+    try:
+        outputs = model.generate(
+            **inputs,
+            max_new_tokens=200,
+            do_sample=False,
+            repetition_penalty=1.3
+        )
+        input_length = inputs["input_ids"].shape[1]
+        generated_tokens = outputs[0][input_length:]
+        response = tokenizer.decode(generated_tokens, skip_special_tokens=True)
+        return response.strip()
+    except Exception as e:
+        return f"Generation error: {e}"
 
 
 def answer_query(query: str, index_dir: str, k: int, index_type: str, model, tokenizer) -> str:
@@ -72,12 +76,15 @@ def answer_data_set(student_search_results_path, save_directory):
     with open(student_search_results_path) as f:
         results_search = json.load(f)
     answers = []
-    for result in results_search["search_results"]:
+    for result in tqdm(results_search["search_results"], desc="Generating answers"):
         context_parts = []
         for source in result["retrieved_sources"]:
-            file_text = Path(source["file_path"]).read_text(encoding="utf-8", errors="ignore")
-            chunk_text = file_text[source["first_character_index"]:source["last_character_index"]]
-            context_parts.append(chunk_text)
+            try:
+                file_text = Path(source["file_path"]).read_text(encoding="utf-8", errors="ignore")
+                chunk_text = file_text[source["first_character_index"]:source["last_character_index"]]
+                context_parts.append(chunk_text)
+            except OSError:
+                continue
         context = "\n\n".join(context_parts)
         prompt = f"""Answer the following question based only on the context provided. Be concise.
 

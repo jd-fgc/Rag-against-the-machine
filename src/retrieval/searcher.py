@@ -8,13 +8,17 @@ import bm25s
 def search_query(query: str, index_dir: str, k: int, index_type: str) -> List[MinimalSource]:
     if not query.strip() or k <= 0:
         return []
-    with open('data/processed/chunks/python_chunks.json', 'r') as f:
+    with open(f'{index_dir}/chunks/python_chunks.json', 'r') as f:
         python_chunks = json.load(f)
-    with open('data/processed/chunks/markdown_chunks.json') as f:
+    with open(f'{index_dir}/chunks/markdown_chunks.json', 'r') as f:
         markdown_chunks = json.load(f)
 
-    retriever_python = bm25s.BM25.load('data/processed/bm25_index/python')
-    retriever_markdown = bm25s.BM25.load('data/processed/bm25_index/markdown')
+    try:
+        retriever_python = bm25s.BM25.load(f'{index_dir}/bm25_index/python')
+        retriever_markdown = bm25s.BM25.load(f'{index_dir}/bm25_index/markdown')
+    except Exception:
+        print("Index not found. Run 'index' first.")
+        return []
 
     result = []
 
@@ -45,13 +49,13 @@ def search_dataset(dataset_path, index_dir, k, save_directory, index_type):
     if not Path(dataset_path).exists():
         print(f"Dataset not found: {dataset_path}")
         return
-    with open('data/processed/chunks/python_chunks.json', 'r') as f:
+    with open(f'{index_dir}/chunks/python_chunks.json', 'r') as f:
         python_chunks = json.load(f)
-    with open('data/processed/chunks/markdown_chunks.json') as f:
+    with open(f'{index_dir}/chunks/markdown_chunks.json') as f:
         markdown_chunks = json.load(f)
 
-    retriever_python = bm25s.BM25.load('data/processed/bm25_index/python')
-    retriever_markdown = bm25s.BM25.load('data/processed/bm25_index/markdown')
+    retriever_python = bm25s.BM25.load(f'{index_dir}/bm25_index/python')
+    retriever_markdown = bm25s.BM25.load(f'{index_dir}/bm25_index/markdown')
 
     with open(dataset_path, 'r') as f:
         dataset = json.load(f)

@@ -1,3 +1,4 @@
+from tqdm import tqdm
 
 
 class StudentCLI:
@@ -9,7 +10,7 @@ class StudentCLI:
         from src.ingestion.indexer import loader_file, build_indexes
         python_chunks = []
         markdown_chunks = []
-        for file_path, text in loader_file(repo_path):
+        for file_path, text in tqdm(loader_file(repo_path), desc="Chunking files"):
             if file_path.suffix == ".py":
                 chunks = chunk_python(str(file_path), text, max_chunk_size)
                 python_chunks.extend(chunks)

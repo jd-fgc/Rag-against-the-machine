@@ -2,10 +2,14 @@ import json
 
 
 def evaluate(student_answer_path: str, dataset_path: str, k: int, max_context_length: int):
-    with open(student_answer_path) as f:
-        student_data = json.load(f)
-    with open(dataset_path) as f:
-        ground_truth = json.load(f)
+    try:
+        with open(student_answer_path) as f:
+            student_data = json.load(f)
+        with open(dataset_path) as f:
+            ground_truth = json.load(f)
+    except FileNotFoundError as e:
+        print(f"File not found: {e}")
+        return
 
     gt_by_id = {}
     for question in ground_truth["rag_questions"]:

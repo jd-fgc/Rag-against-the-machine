@@ -11,9 +11,13 @@ def save_chunks(chunks: List[Chunk], output_path: str) -> None:
         json.dump([chunk.model_dump() for chunk in chunks], f, indent=4)
 
 
+
 def chunk_python(file_path: str, text: str, max_chunk_size: int) -> List[Chunk]:
     chunks = []
-    tree = ast.parse(text)
+    try:
+        tree = ast.parse(text)
+    except SyntaxError:
+        return []
 
     lines = text.split("\n")
     offsets = [0]
