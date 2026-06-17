@@ -1,5 +1,5 @@
 from typing import List
-from models import Chunk
+from src.models import Chunk
 from pathlib import Path
 import ast
 import json

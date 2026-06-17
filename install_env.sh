@@ -18,3 +18,9 @@ echo "Installing uv..."
 
 echo "Installing dependencies"
 "$VENV/bin/uv" sync --active
+
+
+echo "To use the program, don't forget to activate the virtual environment by entering this command:"
+echo "source ../RAG_VENV/bin/activate"
+
+echo "And to use the program, don't forget the flag --active when launching with uv."

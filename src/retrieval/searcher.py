@@ -1,11 +1,13 @@
 from typing import List
-from models import MinimalSource, MinimalSearchResults, StudentSearchResults
+from src.models import MinimalSource, MinimalSearchResults, StudentSearchResults
 from pathlib import Path
 import json
 import bm25s
 
 
 def search_query(query: str, index_dir: str, k: int, index_type: str) -> List[MinimalSource]:
+    if not query.strip() or k <= 0:
+        return []
     with open('data/processed/chunks/python_chunks.json', 'r') as f:
         python_chunks = json.load(f)
     with open('data/processed/chunks/markdown_chunks.json') as f:
@@ -40,6 +42,9 @@ def search_query(query: str, index_dir: str, k: int, index_type: str) -> List[Mi
 
 
 def search_dataset(dataset_path, index_dir, k, save_directory, index_type):
+    if not Path(dataset_path).exists():
+        print(f"Dataset not found: {dataset_path}")
+        return
     with open('data/processed/chunks/python_chunks.json', 'r') as f:
         python_chunks = json.load(f)
     with open('data/processed/chunks/markdown_chunks.json') as f:

@@ -1,41 +1,42 @@
-from models import MinimalAnswer, StudentSearchResultsAndAnswer
+from src.models import MinimalAnswer, StudentSearchResultsAndAnswer
+from src.retrieval.searcher import search_query
 from transformers import AutoTokenizer, AutoModelForCausalLM
-from retrieval.searcher import search_query
 from pathlib import Path
 import torch
 import json
 
 
-def load_model():
-    model_name = "Qwen/Qwen3-0.6B"
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForCausalLM.from_pretrained(
-        model_name,
-        dtype=torch.float16,
-        device_map="cuda"
-    )
-    return model, tokenizer
-
-# Method pour le PC Portable
 # def load_model():
 #     model_name = "Qwen/Qwen3-0.6B"
-#     device = "cuda" if torch.cuda.is_available() else "cpu"
 #     tokenizer = AutoTokenizer.from_pretrained(model_name)
 #     model = AutoModelForCausalLM.from_pretrained(
 #         model_name,
-#         dtype=torch.float16 if device == "cuda" else torch.float32,
-#         device_map=device
+#         dtype=torch.float16,
+#         device_map="cuda"
 #     )
 #     return model, tokenizer
 
+# Method pour le PC Portable
+def load_model():
+    model_name = "Qwen/Qwen3-0.6B"
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForCausalLM.from_pretrained(
+        model_name,
+        dtype=torch.float16 if device == "cuda" else torch.float32,
+        device_map=device
+    )
+    return model, tokenizer
+
 
 def generate_answer(prompt: str, model, tokenizer) -> str:
+    device = "cuda" if torch.cuda.is_available() else "cpu"
     inputs = tokenizer.apply_chat_template(
         [{"role": "user", "content": prompt}],
         add_generation_prompt=True,
         enable_thinking=False,
         return_tensors="pt"
-    ).to("cuda")
+    ).to(device)
     outputs = model.generate(
         **inputs,
         max_new_tokens=200,
@@ -93,7 +94,6 @@ def answer_data_set(student_search_results_path, save_directory):
             retrieved_sources=result["retrieved_sources"],
             answer=answer
         ))
-        break
     output = StudentSearchResultsAndAnswer(
         search_results=answers,
         k=results_search["k"]
