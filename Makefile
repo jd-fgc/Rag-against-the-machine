@@ -25,7 +25,7 @@ install:
     ./package_installation.sh
 
 run:
-    @$(UV) main.py
+    @uv run python -m src
 
 debug:
     @$(UV) -m pdb main.py
@@ -39,8 +39,8 @@ clean:
                 @rm -rf .coverage
 
 lint:
-    $(call step,Looking for flake8 error,flake8 --exclude=data/ .)
-    $(call step,Looking for mypy error,mypy . $(MYPY_FLAGS))
+    $(call step,Looking for flake8 error,flake8 src/)
+    $(call step,Looking for mypy error,mypy src/ $(MYPY_FLAGS))
 
 lint-strict:
     $(call step,Looking for flake8 error,flake8 --exclude=data/ .)
