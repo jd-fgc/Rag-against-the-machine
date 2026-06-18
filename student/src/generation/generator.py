@@ -97,7 +97,7 @@ def answer_data_set(student_search_results_path, save_directory):
 
         answers.append(MinimalAnswer(
             question_id=result["question_id"],
-            question=result["question"],
+            question_str=result["question"],
             retrieved_sources=result["retrieved_sources"],
             answer=answer
         ))
