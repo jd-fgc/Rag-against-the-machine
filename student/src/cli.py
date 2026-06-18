@@ -23,7 +23,7 @@ class StudentCLI:
         print("Ingestion complete! Indices saved under data/processed/")
 
     def search(self, query: str, index_dir: str = "data/processed",
-            k: int = 10, index_type: str = "both") -> None:
+               k: int = 10, index_type: str = "both") -> None:
         from src.retrieval.searcher import search_query
         if not query or not query.strip():
             print("Empty query, no results.")
