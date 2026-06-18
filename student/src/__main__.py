@@ -2,7 +2,7 @@ import fire
 from src.cli import StudentCLI
 
 
-def main():
+def main() -> None:
     try:
         fire.Fire(StudentCLI)
     except Exception:

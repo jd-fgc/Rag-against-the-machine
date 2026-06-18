@@ -1,6 +1,8 @@
 from src.models import MinimalAnswer, StudentSearchResultsAndAnswer
 from src.retrieval.searcher import search_query
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoTokenizer, AutoModelForCausalLM, \
+    PreTrainedModel, PreTrainedTokenizerBase
+from typing import Any, Tuple
 from pathlib import Path
 from tqdm import tqdm
 import torch
@@ -18,7 +20,7 @@ import json
 #     return model, tokenizer
 
 # Method pour le PC Portable
-def load_model():
+def load_model() -> Tuple[Any, Any]:
     model_name = "Qwen/Qwen3-0.6B"
     device = "cuda" if torch.cuda.is_available() else "cpu"
     tokenizer = AutoTokenizer.from_pretrained(model_name)
@@ -30,7 +32,7 @@ def load_model():
     return model, tokenizer
 
 
-def generate_answer(prompt: str, model, tokenizer) -> str:
+def generate_answer(prompt: str, model: Any, tokenizer: Any) -> str:
     device = "cuda" if torch.cuda.is_available() else "cpu"
     inputs = tokenizer.apply_chat_template(
         [{"role": "user", "content": prompt}],
@@ -47,52 +49,63 @@ def generate_answer(prompt: str, model, tokenizer) -> str:
         )
         input_length = inputs["input_ids"].shape[1]
         generated_tokens = outputs[0][input_length:]
-        response = tokenizer.decode(generated_tokens, skip_special_tokens=True)
+        response = str(tokenizer.decode(generated_tokens, skip_special_tokens=True))
         return response.strip()
     except Exception as e:
         return f"Generation error: {e}"
 
 
-def answer_query(query: str, index_dir: str, k: int, index_type: str, model, tokenizer) -> str:
+def answer_query(query: str, index_dir: str, k: int, index_type: str,
+                 model: Any, tokenizer: Any) -> str:
     sources = search_query(query, index_dir, k, index_type)
     context_parts = []
     for source in sources:
-        text = Path(source.file_path).read_text(encoding="utf-8", errors="ignore")
-        chunk_text = text[source.first_character_index:source.last_character_index]
+        text = Path(source.file_path).read_text(encoding="utf-8",
+                                                errors="ignore")
+        chunk_text = text[
+            source.first_character_index:source.last_character_index]
         context_parts.append(chunk_text)
     context = "\n\n".join(context_parts)
-    prompt = f"""Answer the following question based only on the context provided. Be concise.
+    prompt = (f"""Answer the following question based only on the
+ context provided. Be concise.
 
     Context:
     {context}
 
     Question: {query}
-    Answer:"""
+    Answer:""")
     return generate_answer(prompt, model, tokenizer)
 
 
-def answer_data_set(student_search_results_path, save_directory):
+def answer_data_set(student_search_results_path: str,
+                    save_directory: str) -> None:
     model, tokenizer = load_model()
     with open(student_search_results_path) as f:
         results_search = json.load(f)
     answers = []
-    for result in tqdm(results_search["search_results"], desc="Generating answers"):
+    for result in tqdm(results_search["search_results"],
+                       desc="Generating answers"):
         context_parts = []
         for source in result["retrieved_sources"]:
             try:
-                file_text = Path(source["file_path"]).read_text(encoding="utf-8", errors="ignore")
-                chunk_text = file_text[source["first_character_index"]:source["last_character_index"]]
+                file_text = Path(
+                    source["file_path"]).read_text(
+                        encoding="utf-8", errors="ignore")
+                chunk_text = file_text[
+                    source["first_character_index"]:source[
+                        "last_character_index"]]
                 context_parts.append(chunk_text)
             except OSError:
                 continue
         context = "\n\n".join(context_parts)
-        prompt = f"""Answer the following question based only on the context provided. Be concise.
+        prompt = (f"""Answer the following question based only on the context
+provided. Be concise.
 
         Context:
         {context}
 
         Question: {result["question"]}
-        Answer:"""
+        Answer:""")
         answer = generate_answer(prompt, model, tokenizer)
 
         answers.append(MinimalAnswer(

@@ -34,7 +34,8 @@ def search_query(query: str, index_dir: str, k: int, index_type: str) -> List[Mi
             combined.append((score, "markdown", int(idx)))
         combined.sort(key=lambda x: x[0], reverse=True)
         for score, chunk_type, idx in combined[:k]:
-            chunk = python_chunks[idx] if chunk_type == "python" else markdown_chunks[idx]
+            chunk = (python_chunks[idx] if chunk_type == "python"
+                     else markdown_chunks[idx])
             result.append(MinimalSource(
                 file_path=chunk["file_path"],
                 first_character_index=chunk["first_character_index"],
@@ -62,7 +63,8 @@ def search_query(query: str, index_dir: str, k: int, index_type: str) -> List[Mi
     return result
 
 
-def search_dataset(dataset_path, index_dir, k, save_directory, index_type):
+def search_dataset(dataset_path: str, index_dir: str, k: int,
+                   save_directory: str, index_type: str) -> None:
     if "doc" in Path(dataset_path).name.lower():
         index_type = "markdown"
     elif "code" in Path(dataset_path).name.lower():

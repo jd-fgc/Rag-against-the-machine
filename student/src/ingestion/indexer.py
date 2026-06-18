@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Generator
 import bm25s
 import json
 
@@ -6,7 +7,7 @@ import json
 SKIP_DIRS = {"__pycache__", ".git", "tests", "build", "dist", "benchmarks"}
 
 
-def loader_file(repo_path: str):
+def loader_file(repo_path: str) -> Generator:
     repo = Path(repo_path)
     seen = set()
 
@@ -24,7 +25,7 @@ def loader_file(repo_path: str):
             yield file_path, text
 
 
-def build_indexes(output_dir: str):
+def build_indexes(output_dir: str) -> None:
     with open(f'{output_dir}/chunks/python_chunks.json', 'r') as f:
         python_chunks = json.load(f)
     with open(f'{output_dir}/chunks/markdown_chunks.json', 'r') as f:

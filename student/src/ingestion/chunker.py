@@ -11,7 +11,8 @@ def save_chunks(chunks: List[Chunk], output_path: str) -> None:
         json.dump([chunk.model_dump() for chunk in chunks], f, indent=4)
 
 
-def chunk_python(file_path: str, text: str, max_chunk_size: int) -> List[Chunk]:
+def chunk_python(file_path: str, text: str,
+                 max_chunk_size: int) -> List[Chunk]:
     chunks = []
     try:
         tree = ast.parse(text)
@@ -37,8 +38,11 @@ def chunk_python(file_path: str, text: str, max_chunk_size: int) -> List[Chunk]:
             p_cursor += max_chunk_size
 
     for node in ast.iter_child_nodes(tree):
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+        if isinstance(node, (ast.FunctionDef,
+                             ast.AsyncFunctionDef, ast.ClassDef)):
             start = offsets[node.lineno - 1]
+            assert node.end_lineno is not None
+            assert node.end_col_offset is not None
             end = offsets[node.end_lineno - 1] + node.end_col_offset
             if (end - start) <= max_chunk_size:
                 chunks.append(Chunk(
@@ -56,7 +60,10 @@ def chunk_python(file_path: str, text: str, max_chunk_size: int) -> List[Chunk]:
                 if children:
                     for child in children:
                         c_start = offsets[child.lineno - 1]
-                        c_end = offsets[child.end_lineno - 1] + child.end_col_offset
+                        assert child.end_lineno is not None
+                        assert child.end_col_offset is not None
+                        c_end = (offsets[child.end_lineno - 1] +
+                                 child.end_col_offset)
                         if (c_end - c_start) <= max_chunk_size:
                             chunks.append(Chunk(
                                 file_path=file_path,
@@ -72,7 +79,8 @@ def chunk_python(file_path: str, text: str, max_chunk_size: int) -> List[Chunk]:
     return chunks
 
 
-def chunk_markdown(file_path: str, text: str, max_chunk_size: int) -> List[Chunk]:
+def chunk_markdown(file_path: str, text: str,
+                   max_chunk_size: int) -> List[Chunk]:
     chunks = []
     lines = text.split("\n")
     section_start = 0
@@ -99,18 +107,23 @@ def chunk_markdown(file_path: str, text: str, max_chunk_size: int) -> List[Chunk
                             chunks.append(Chunk(
                                 file_path=file_path,
                                 first_character_index=local_cursor,
-                                last_character_index=local_cursor + len(paragraph),
+                                last_character_index=(local_cursor +
+                                                      len(paragraph)),
                                 chunk_type="markdown",
                                 text=paragraph
                             ))
                         else:
                             p_cursor = 0
                             while p_cursor < len(paragraph):
-                                chunk_text = paragraph[p_cursor:p_cursor + max_chunk_size]
+                                chunk_text = (paragraph[p_cursor:p_cursor +
+                                                        max_chunk_size])
                                 chunks.append(Chunk(
                                     file_path=file_path,
-                                    first_character_index=local_cursor + p_cursor,
-                                    last_character_index=local_cursor + p_cursor + len(chunk_text),
+                                    first_character_index=(local_cursor +
+                                                           p_cursor),
+                                    last_character_index=(local_cursor +
+                                                          p_cursor +
+                                                          len(chunk_text)),
                                     text=chunk_text,
                                     chunk_type="markdown"
                                 ))
@@ -145,11 +158,13 @@ def chunk_markdown(file_path: str, text: str, max_chunk_size: int) -> List[Chunk
                     else:
                         p_cursor = 0
                         while p_cursor < len(paragraph):
-                            chunk_text = paragraph[p_cursor:p_cursor + max_chunk_size]
+                            chunk_text = (paragraph[p_cursor:p_cursor +
+                                                    max_chunk_size])
                             chunks.append(Chunk(
                                 file_path=file_path,
                                 first_character_index=local_cursor + p_cursor,
-                                last_character_index=local_cursor + p_cursor + len(chunk_text),
+                                last_character_index=(local_cursor + p_cursor +
+                                                      len(chunk_text)),
                                 text=chunk_text,
                                 chunk_type="markdown"
                             ))

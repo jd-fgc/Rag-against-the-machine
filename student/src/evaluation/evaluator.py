@@ -1,7 +1,9 @@
+from typing import Any
 import json
 
 
-def evaluate(student_answer_path: str, dataset_path: str, k: int, max_context_length: int):
+def evaluate(student_answer_path: str, dataset_path: str, k: int,
+             max_context_length: int) -> None:
     try:
         with open(student_answer_path) as f:
             student_data = json.load(f)
@@ -33,13 +35,16 @@ def evaluate(student_answer_path: str, dataset_path: str, k: int, max_context_le
     print(f"Recall@{k}: {recall:.3f}")
 
 
-def has_overlap(gt_source: dict, ret_source: dict) -> bool:
+def has_overlap(gt_source: dict, ret_source: dict) -> Any:
     if gt_source["file_path"] != ret_source["file_path"]:
         return False
-    overlap_start = max(gt_source["first_character_index"], ret_source["first_character_index"])
-    overlap_end = min(gt_source["last_character_index"], ret_source["last_character_index"])
+    overlap_start = max(gt_source["first_character_index"],
+                        ret_source["first_character_index"])
+    overlap_end = min(gt_source["last_character_index"],
+                      ret_source["last_character_index"])
     if overlap_end <= overlap_start:
         return False
     overlap_length = overlap_end - overlap_start
-    gt_length = gt_source["last_character_index"] - gt_source["first_character_index"]
+    gt_length = (gt_source["last_character_index"] -
+                 gt_source["first_character_index"])
     return (overlap_length / gt_length) >= 0.05
