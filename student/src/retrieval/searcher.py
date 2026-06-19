@@ -8,6 +8,17 @@ import bm25s
 
 def search_query(query: str, index_dir: str, k: int,
                  index_type: str) -> List[MinimalSource]:
+    """Search the BM25 index for the most relevant chunks.
+
+    Args:
+        query: The search query string.
+        index_dir: Path to the directory containing the BM25 indexes.
+        k: Number of results to retrieve.
+        index_type: Which index to search: 'python', 'markdown', or 'both'.
+
+    Returns:
+        List of MinimalSource objects with file path and character positions.
+    """
     if not query.strip() or k <= 0:
         return []
 
@@ -68,6 +79,15 @@ def search_query(query: str, index_dir: str, k: int,
 
 def search_dataset(dataset_path: str, index_dir: str, k: int,
                    save_directory: str, index_type: str) -> None:
+    """Process a full dataset of questions and save search results to disk.
+
+    Args:
+        dataset_path: Path to the JSON dataset file.
+        index_dir: Path to the directory containing the BM25 indexes.
+        k: Number of results per question.
+        save_directory: Directory where results will be saved.
+        index_type: Which index to search: 'python', 'markdown', or 'both'.
+    """
     if "doc" in Path(dataset_path).name.lower():
         index_type = "markdown"
     elif "code" in Path(dataset_path).name.lower():

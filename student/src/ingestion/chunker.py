@@ -6,6 +6,12 @@ import json
 
 
 def save_chunks(chunks: List[Chunk], output_path: str) -> None:
+    """Save a list of chunks to a JSON file.
+
+    Args:
+        chunks: List of Chunk objects to save.
+        output_path: Full path to the output JSON file.
+    """
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w") as f:
         json.dump([chunk.model_dump() for chunk in chunks], f, indent=4)
@@ -13,6 +19,20 @@ def save_chunks(chunks: List[Chunk], output_path: str) -> None:
 
 def chunk_python(file_path: str, text: str,
                  max_chunk_size: int) -> List[Chunk]:
+    """Chunk a Python file using AST node boundaries.
+
+    Top-level classes and functions become individual chunks.
+    If a node exceeds max_chunk_size, its children (methods) are
+    chunked individually. Falls back to hard cut if needed.
+
+    Args:
+        file_path: Path to the Python source file.
+        text: Full content of the file.
+        max_chunk_size: Maximum allowed chunk size in characters.
+
+    Returns:
+        List of Chunk objects.
+    """
     chunks = []
     try:
         tree = ast.parse(text)
@@ -81,6 +101,20 @@ def chunk_python(file_path: str, text: str,
 
 def chunk_markdown(file_path: str, text: str,
                    max_chunk_size: int) -> List[Chunk]:
+    """Chunk a Markdown file by heading boundaries.
+
+    Each section (heading + content until the next heading) becomes one chunk.
+    Sections exceeding max_chunk_size are split on paragraph boundaries,
+    with a hard cut fallback for paragraphs that are still too large.
+
+    Args:
+        file_path: Path to the Markdown file.
+        text: Full content of the file.
+        max_chunk_size: Maximum allowed chunk size in characters.
+
+    Returns:
+        List of Chunk objects.
+    """
     chunks = []
     lines = text.split("\n")
     section_start = 0

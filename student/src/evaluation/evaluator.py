@@ -4,6 +4,14 @@ import json
 
 def evaluate(student_answer_path: str, dataset_path: str, k: int,
              max_context_length: int) -> None:
+    """Evaluate search results against ground truth using recall@k.
+
+    Args:
+        student_answer_path: Path to the student search results JSON.
+        dataset_path: Path to the answered questions dataset JSON.
+        k: Number of retrieved results used.
+        max_context_length: Maximum context length used during retrieval.
+    """
     try:
         with open(student_answer_path) as f:
             student_data = json.load(f)
@@ -36,6 +44,18 @@ def evaluate(student_answer_path: str, dataset_path: str, k: int,
 
 
 def has_overlap(gt_source: dict, ret_source: dict) -> Any:
+    """Check if a retrieved source overlaps with a ground truth source.
+
+    A source is considered found if there is at least 5% character overlap
+    between the retrieved source and the ground truth source.
+
+    Args:
+        gt_source: Ground truth source with file_path and character indexes.
+        ret_source: Retrieved source with file_path and character indexes.
+
+    Returns:
+        True if overlap is at least 5%, False otherwise.
+    """
     if gt_source["file_path"] != ret_source["file_path"]:
         return False
     overlap_start = max(gt_source["first_character_index"],

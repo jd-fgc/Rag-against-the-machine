@@ -2,6 +2,11 @@ from tqdm import tqdm
 
 
 class StudentCLI:
+    """Command-line interface for the RAG pipeline.
+
+    Provides commands for indexing, searching, answering and evaluating
+    the vLLM knowledge base using BM25 retrieval and Qwen3-0.6B generation.
+    """
 
     def index(self, repo_path: str = "data/raw/vllm-0.10.1",
               output_dir: str = "data/processed",

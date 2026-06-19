@@ -10,6 +10,13 @@ import json
 
 
 def load_model() -> Tuple[Any, Any]:
+    """Load the Qwen3-0.6B model and tokenizer.
+
+    Automatically selects CUDA if available, falls back to CPU.
+
+    Returns:
+        Tuple of (model, tokenizer).
+    """
     cache_dir = f"/goinfre/{os.getenv('USER')}/.cache/huggingface"
     model_name = "Qwen/Qwen3-0.6B"
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -24,6 +31,16 @@ def load_model() -> Tuple[Any, Any]:
 
 
 def generate_answer(prompt: str, model: Any, tokenizer: Any) -> str:
+    """Generate a natural language answer from a prompt using the LLM.
+
+    Args:
+        prompt: The full prompt including context and question.
+        model: The loaded language model.
+        tokenizer: The loaded tokenizer.
+
+    Returns:
+        Generated answer string.
+    """
     device = "cuda" if torch.cuda.is_available() else "cpu"
     inputs = tokenizer.apply_chat_template(
         [{"role": "user", "content": prompt}],
@@ -49,6 +66,19 @@ def generate_answer(prompt: str, model: Any, tokenizer: Any) -> str:
 
 def answer_query(query: str, index_dir: str, k: int, index_type: str,
                  model: Any, tokenizer: Any) -> str:
+    """Answer a single question using retrieved context.
+
+    Args:
+        query: The question to answer.
+        index_dir: Path to the directory containing the BM25 indexes.
+        k: Number of chunks to retrieve as context.
+        index_type: Which index to search: 'python', 'markdown', or 'both'.
+        model: The loaded language model.
+        tokenizer: The loaded tokenizer.
+
+    Returns:
+        Generated answer string.
+    """
     sources = search_query(query, index_dir, k, index_type)
     context_parts = []
     for source in sources:
@@ -71,6 +101,12 @@ def answer_query(query: str, index_dir: str, k: int, index_type: str,
 
 def answer_data_set(student_search_results_path: str,
                     save_directory: str) -> None:
+    """Generate answers for all questions in a search results file.
+
+    Args:
+        student_search_results_path: Path to the search results JSON file.
+        save_directory: Directory where answers will be saved.
+    """
     model, tokenizer = load_model()
     with open(student_search_results_path) as f:
         results_search = json.load(f)

@@ -8,6 +8,16 @@ SKIP_DIRS = {"__pycache__", ".git", "tests", "build", "dist", "benchmarks"}
 
 
 def loader_file(repo_path: str) -> Generator:
+    """Recursively yield Python and Markdown files from a repository.
+
+    Skips common non-essential directories and deduplicates symlinks.
+
+    Args:
+        repo_path: Path to the repository root directory.
+
+    Yields:
+        Tuple of (file_path, text) for each .py and .md file found.
+    """
     repo = Path(repo_path)
     seen = set()
 
@@ -26,6 +36,14 @@ def loader_file(repo_path: str) -> Generator:
 
 
 def build_indexes(output_dir: str) -> None:
+    """Build and save BM25 indexes for Python and Markdown chunks.
+
+    Reads chunk JSON files from output_dir/chunks/ and saves
+    BM25 indexes to output_dir/bm25_index/.
+
+    Args:
+        output_dir: Path to the processed data directory.
+    """
     with open(f'{output_dir}/chunks/python_chunks.json', 'r') as f:
         python_chunks = json.load(f)
     with open(f'{output_dir}/chunks/markdown_chunks.json', 'r') as f:
