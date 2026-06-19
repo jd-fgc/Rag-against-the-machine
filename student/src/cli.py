@@ -6,11 +6,13 @@ class StudentCLI:
     def index(self, repo_path: str = "data/raw/vllm-0.10.1",
               output_dir: str = "data/processed",
               max_chunk_size: int = 2000) -> None:
-        from src.ingestion.chunker import chunk_python, chunk_markdown, save_chunks
+        from src.ingestion.chunker import (chunk_python, chunk_markdown,
+                                           save_chunks)
         from src.ingestion.indexer import loader_file, build_indexes
         python_chunks = []
         markdown_chunks = []
-        for file_path, text in tqdm(loader_file(repo_path), desc="Chunking files"):
+        for file_path, text in tqdm(loader_file(repo_path),
+                                    desc="Chunking files"):
             if file_path.suffix == ".py":
                 chunks = chunk_python(str(file_path), text, max_chunk_size)
                 python_chunks.extend(chunks)
@@ -18,7 +20,8 @@ class StudentCLI:
                 chunks = chunk_markdown(str(file_path), text, max_chunk_size)
                 markdown_chunks.extend(chunks)
         save_chunks(python_chunks, f"{output_dir}/chunks/python_chunks.json")
-        save_chunks(markdown_chunks, f"{output_dir}/chunks/markdown_chunks.json")
+        save_chunks(markdown_chunks, f"{output_dir}" +
+                    "/chunks/markdown_chunks.json")
         build_indexes(output_dir)
         print("Ingestion complete! Indices saved under data/processed/")
 
@@ -30,7 +33,8 @@ class StudentCLI:
             return
         results = search_query(query, index_dir, k, index_type)
         for r in results:
-            print(f"{r.file_path} [{r.first_character_index}:{r.last_character_index}]")
+            print(f"{r.file_path}" +
+                  f"[{r.first_character_index}:{r.last_character_index}]")
 
     def search_dataset(self, dataset_path: str,
                        index_dir: str = "data/processed",
@@ -47,7 +51,8 @@ class StudentCLI:
         print(answer_query(query, index_dir, k, index_type, model, tokenizer))
 
     def answer_dataset(self, student_search_results_path: str,
-                       save_directory: str = "data/output/search_results_and_answer") -> None:
+                       save_directory: str = "data/" +
+                       "output/search_results_and_answer") -> None:
         from src.generation.generator import answer_data_set
         answer_data_set(student_search_results_path, save_directory)
 

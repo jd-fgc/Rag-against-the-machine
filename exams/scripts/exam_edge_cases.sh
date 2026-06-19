@@ -107,19 +107,19 @@ run_edge_test() {
 
 # --- Test 1: Empty query ---
 run_edge_test 1 "Empty query" \
-    "uv run python -m $MODULE_NAME search '' --k 10"
+    "uv run --active python -m $MODULE_NAME search '' --k 10"
 
 # --- Test 2: Gibberish query ---
 run_edge_test 2 "Gibberish query" \
-    "uv run python -m $MODULE_NAME search 'asdfghjkl zxcvbnm qwertyuiop' --k 10"
+    "uv run --active python -m $MODULE_NAME search 'asdfghjkl zxcvbnm qwertyuiop' --k 10"
 
 # --- Test 3: k=0 ---
 run_edge_test 3 "k=0 answer" \
-    "uv run python -m $MODULE_NAME answer 'What is vLLM?' --k 0"
+    "uv run --active python -m $MODULE_NAME answer 'What is vLLM?' --k 0"
 
 # --- Test 4: Bad dataset path ---
 run_edge_test 4 "Nonexistent dataset path" \
-    "uv run python -m $MODULE_NAME search_dataset --dataset_path /nonexistent/dataset.json --k 10"
+    "uv run --active python -m $MODULE_NAME search_dataset --dataset_path /nonexistent/dataset.json --k 10"
 
 # --- Final Summary ---
 echo ""

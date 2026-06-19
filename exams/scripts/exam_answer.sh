@@ -97,7 +97,7 @@ NC='\033[0m'
 run_moulinette() {
     if [ -d "$MOULINETTE_PATH" ]; then
         cd "$MOULINETTE_PATH"
-        uv run python -m moulinette "$@"
+        uv run --active python -m moulinette "$@"
     else
         "$MOULINETTE_PATH" "$@"
     fi
@@ -171,7 +171,7 @@ for question in "${QUESTIONS[@]}"; do
 
     cd "$STUDENT_PATH"
     echo -e "${BOLD}Student answer:${NC}"
-    uv run python -m $MODULE_NAME answer "$question" --k 10 \
+    uv run --active python -m $MODULE_NAME answer "$question" --k 10 \
         2> "$EVAL_DIR/answer_${ANSWER_NUM}_stderr.log" \
         | tee "$EVAL_DIR/answer_${ANSWER_NUM}.log"
 

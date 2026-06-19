@@ -104,7 +104,7 @@ NC='\033[0m'
 run_moulinette() {
     if [ -d "$MOULINETTE_PATH" ]; then
         cd "$MOULINETTE_PATH"
-        uv run python -m moulinette "$@"
+        --active  --active python -m moulinette "$@"
     else
         "$MOULINETTE_PATH" "$@"
     fi
@@ -136,7 +136,7 @@ echo -e "${YELLOW}--- Test 1/4: Indexing (limit: ${INDEXING_TIME_LIMIT}s) ---${N
 
 cd "$STUDENT_PATH"
 INDEX_START=$(date +%s)
-uv run python -m $MODULE_NAME index --max_chunk_size 2000 \
+uv run --active python -m $MODULE_NAME index --max_chunk_size 2000 \
     > "$EVAL_DIR/indexing_stdout.log" 2> "$EVAL_DIR/indexing_stderr.log" \
     && INDEX_SUCCESS=1 || INDEX_SUCCESS=0
 INDEX_END=$(date +%s)
@@ -163,7 +163,7 @@ cd "$STUDENT_PATH"
 # Run search_dataset on docs
 echo "  Running search_dataset on docs..."
 DOCS_SEARCH_START=$(date +%s)
-uv run python -m $MODULE_NAME search_dataset \
+uv run --active python -m $MODULE_NAME search_dataset \
     --dataset_path "$DOCS_UNANSWERED" \
     --k 10 \
     --save_directory "$SEARCH_OUTPUT_DIR" \
@@ -176,7 +176,7 @@ echo "  Docs search: ${DOCS_SEARCH_DURATION}s"
 # Run search_dataset on code
 echo "  Running search_dataset on code..."
 CODE_SEARCH_START=$(date +%s)
-uv run python -m $MODULE_NAME search_dataset \
+uv run --active python -m $MODULE_NAME search_dataset \
     --dataset_path "$CODE_UNANSWERED" \
     --k 10 \
     --save_directory "$SEARCH_OUTPUT_DIR" \

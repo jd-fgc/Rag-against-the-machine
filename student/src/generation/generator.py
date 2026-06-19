@@ -1,31 +1,22 @@
 from src.models import MinimalAnswer, StudentSearchResultsAndAnswer
 from src.retrieval.searcher import search_query
-from transformers import AutoTokenizer, AutoModelForCausalLM, \
-    PreTrainedModel, PreTrainedTokenizerBase
+from transformers import AutoTokenizer, AutoModelForCausalLM
 from typing import Any, Tuple
 from pathlib import Path
 from tqdm import tqdm
+import os
 import torch
 import json
 
 
-# def load_model():
-#     model_name = "Qwen/Qwen3-0.6B"
-#     tokenizer = AutoTokenizer.from_pretrained(model_name)
-#     model = AutoModelForCausalLM.from_pretrained(
-#         model_name,
-#         dtype=torch.float16,
-#         device_map="cuda"
-#     )
-#     return model, tokenizer
-
-# Method pour le PC Portable
 def load_model() -> Tuple[Any, Any]:
+    cache_dir = f"/goinfre/{os.getenv('USER')}/.cache/huggingface"
     model_name = "Qwen/Qwen3-0.6B"
     device = "cuda" if torch.cuda.is_available() else "cpu"
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
+        cache_dir=cache_dir,
         dtype=torch.float16 if device == "cuda" else torch.float32,
         device_map=device
     )
@@ -49,7 +40,8 @@ def generate_answer(prompt: str, model: Any, tokenizer: Any) -> str:
         )
         input_length = inputs["input_ids"].shape[1]
         generated_tokens = outputs[0][input_length:]
-        response = str(tokenizer.decode(generated_tokens, skip_special_tokens=True))
+        response = str(tokenizer.decode(generated_tokens,
+                                        skip_special_tokens=True))
         return response.strip()
     except Exception as e:
         return f"Generation error: {e}"

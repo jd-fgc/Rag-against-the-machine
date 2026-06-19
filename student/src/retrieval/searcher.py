@@ -1,11 +1,13 @@
 from typing import List
-from src.models import MinimalSource, MinimalSearchResults, StudentSearchResults
+from src.models import MinimalSource, MinimalSearchResults, \
+                    StudentSearchResults
 from pathlib import Path
 import json
 import bm25s
 
 
-def search_query(query: str, index_dir: str, k: int, index_type: str) -> List[MinimalSource]:
+def search_query(query: str, index_dir: str, k: int,
+                 index_type: str) -> List[MinimalSource]:
     if not query.strip() or k <= 0:
         return []
 
@@ -16,7 +18,8 @@ def search_query(query: str, index_dir: str, k: int, index_type: str) -> List[Mi
 
     try:
         retriever_python = bm25s.BM25.load(f'{index_dir}/bm25_index/python')
-        retriever_markdown = bm25s.BM25.load(f'{index_dir}/bm25_index/markdown')
+        retriever_markdown = bm25s.BM25.load(
+            f'{index_dir}/bm25_index/markdown')
     except Exception:
         print("Index not found. Run 'index' first.")
         return []

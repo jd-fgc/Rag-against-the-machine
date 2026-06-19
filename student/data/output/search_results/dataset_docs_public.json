@@ -291,13 +291,13 @@
         },
         {
           "file_path": "data/raw/vllm-0.10.1/docs/models/supported_models.md",
-          "first_character_index": 34797,
-          "last_character_index": 34913
+          "first_character_index": 12252,
+          "last_character_index": 12368
         },
         {
           "file_path": "data/raw/vllm-0.10.1/docs/models/supported_models.md",
-          "first_character_index": 12252,
-          "last_character_index": 12368
+          "first_character_index": 34797,
+          "last_character_index": 34913
         },
         {
           "file_path": "data/raw/vllm-0.10.1/CONTRIBUTING.md",
@@ -987,14 +987,14 @@
           "last_character_index": 10305
         },
         {
-          "file_path": "data/raw/vllm-0.10.1/docs/getting_started/installation/gpu/cuda.inc.md",
-          "first_character_index": 13830,
-          "last_character_index": 13967
-        },
-        {
           "file_path": "data/raw/vllm-0.10.1/docs/getting_started/installation/gpu/rocm.inc.md",
           "first_character_index": 9187,
           "last_character_index": 9324
+        },
+        {
+          "file_path": "data/raw/vllm-0.10.1/docs/getting_started/installation/gpu/cuda.inc.md",
+          "first_character_index": 13830,
+          "last_character_index": 13967
         },
         {
           "file_path": "data/raw/vllm-0.10.1/docs/design/torch_compile.md",
@@ -1201,14 +1201,14 @@
           "last_character_index": 2284
         },
         {
-          "file_path": "data/raw/vllm-0.10.1/docs/features/quantization/int4.md",
-          "first_character_index": 894,
-          "last_character_index": 1079
-        },
-        {
           "file_path": "data/raw/vllm-0.10.1/docs/features/quantization/int8.md",
           "first_character_index": 877,
           "last_character_index": 1062
+        },
+        {
+          "file_path": "data/raw/vllm-0.10.1/docs/features/quantization/int4.md",
+          "first_character_index": 894,
+          "last_character_index": 1079
         },
         {
           "file_path": "data/raw/vllm-0.10.1/docs/features/quantization/quark.md",
@@ -3126,13 +3126,13 @@
         },
         {
           "file_path": "data/raw/vllm-0.10.1/docs/features/disagg_prefill.md",
-          "first_character_index": 3984,
-          "last_character_index": 4039
+          "first_character_index": 3133,
+          "last_character_index": 3179
         },
         {
           "file_path": "data/raw/vllm-0.10.1/docs/features/disagg_prefill.md",
-          "first_character_index": 3133,
-          "last_character_index": 3179
+          "first_character_index": 3984,
+          "last_character_index": 4039
         }
       ]
     },
@@ -3477,14 +3477,14 @@
       "question_str": "How many calibration samples are recommended when preparing calibration data for INT4 quantization in vLLM?",
       "retrieved_sources": [
         {
-          "file_path": "data/raw/vllm-0.10.1/docs/features/quantization/int4.md",
-          "first_character_index": 894,
-          "last_character_index": 1079
-        },
-        {
           "file_path": "data/raw/vllm-0.10.1/docs/features/quantization/int8.md",
           "first_character_index": 877,
           "last_character_index": 1062
+        },
+        {
+          "file_path": "data/raw/vllm-0.10.1/docs/features/quantization/int4.md",
+          "first_character_index": 894,
+          "last_character_index": 1079
         },
         {
           "file_path": "data/raw/vllm-0.10.1/docs/features/quantization/int8.md",
@@ -3894,19 +3894,14 @@
           "last_character_index": 108
         },
         {
-          "file_path": "data/raw/vllm-0.10.1/docs/getting_started/installation/gpu/cuda.inc.md",
-          "first_character_index": 5696,
-          "last_character_index": 5738
-        },
-        {
-          "file_path": "data/raw/vllm-0.10.1/docs/getting_started/installation/gpu/cuda.inc.md",
-          "first_character_index": 12889,
-          "last_character_index": 12928
-        },
-        {
           "file_path": "data/raw/vllm-0.10.1/docs/getting_started/installation/gpu/rocm.inc.md",
           "first_character_index": 786,
           "last_character_index": 826
+        },
+        {
+          "file_path": "data/raw/vllm-0.10.1/docs/getting_started/installation/cpu/x86.inc.md",
+          "first_character_index": 621,
+          "last_character_index": 660
         },
         {
           "file_path": "data/raw/vllm-0.10.1/docs/getting_started/installation/gpu/rocm.inc.md",
@@ -3914,9 +3909,14 @@
           "last_character_index": 5425
         },
         {
-          "file_path": "data/raw/vllm-0.10.1/docs/getting_started/installation/cpu/arm.inc.md",
-          "first_character_index": 884,
-          "last_character_index": 923
+          "file_path": "data/raw/vllm-0.10.1/docs/getting_started/installation/cpu/apple.inc.md",
+          "first_character_index": 1769,
+          "last_character_index": 1808
+        },
+        {
+          "file_path": "data/raw/vllm-0.10.1/docs/getting_started/installation/gpu/cuda.inc.md",
+          "first_character_index": 5696,
+          "last_character_index": 5738
         }
       ]
     },
@@ -4740,13 +4740,13 @@
         },
         {
           "file_path": "data/raw/vllm-0.10.1/docs/features/lora.md",
-          "first_character_index": 15052,
-          "last_character_index": 15148
+          "first_character_index": 14965,
+          "last_character_index": 15052
         },
         {
           "file_path": "data/raw/vllm-0.10.1/docs/features/lora.md",
-          "first_character_index": 14965,
-          "last_character_index": 15052
+          "first_character_index": 15052,
+          "last_character_index": 15148
         },
         {
           "file_path": "data/raw/vllm-0.10.1/docs/models/supported_models.md",
@@ -5005,13 +5005,13 @@
         },
         {
           "file_path": "data/raw/vllm-0.10.1/docs/features/multimodal_inputs.md",
-          "first_character_index": 17504,
-          "last_character_index": 17547
+          "first_character_index": 12086,
+          "last_character_index": 12129
         },
         {
           "file_path": "data/raw/vllm-0.10.1/docs/features/multimodal_inputs.md",
-          "first_character_index": 12086,
-          "last_character_index": 12129
+          "first_character_index": 17504,
+          "last_character_index": 17547
         },
         {
           "file_path": "data/raw/vllm-0.10.1/docs/deployment/docker.md",

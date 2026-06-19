@@ -126,33 +126,33 @@ Place the vLLM repository at `data/raw/vllm-0.10.1/` and datasets at `data/datas
 
 **Index the repository** (run once):
 ```bash
-uv run python -m src index
-uv run python -m src index --max_chunk_size 2000
+uv run --active python -m src index
+uv run --active python -m src index --max_chunk_size 2000
 ```
 
 **Search for a single query:**
 ```bash
-uv run python -m src search "How to configure OpenAI server?" --k 10
+uv run --active python -m src search "How to configure OpenAI server?" --k 10
 ```
 
 **Process a full dataset:**
 ```bash
-uv run python -m src search_dataset --dataset_path data/datasets/UnansweredQuestions/dataset_docs_public.json --k 10 --save_directory data/output/search_results
+uv run --active python -m src search_dataset --dataset_path data/datasets/UnansweredQuestions/dataset_docs_public.json --k 10 --save_directory data/output/search_results
 ```
 
 **Answer a single question:**
 ```bash
-uv run python -m src answer "How does vLLM handle batching?" --k 10
+uv run --active python -m src answer "How does vLLM handle batching?" --k 10
 ```
 
 **Generate answers for a dataset:**
 ```bash
-uv run python -m src answer_dataset --student_search_results_path data/output/search_results/dataset_docs_public.json
+uv run --active python -m src answer_dataset --student_search_results_path data/output/search_results/dataset_docs_public.json
 ```
 
 **Evaluate retrieval quality:**
 ```bash
-uv run python -m src evaluate --student_answer_path data/output/search_results/dataset_docs_public.json --dataset_path data/datasets/AnsweredQuestions/dataset_docs_public.json --k 10
+uv run --active python -m src evaluate --student_answer_path data/output/search_results/dataset_docs_public.json --dataset_path data/datasets/AnsweredQuestions/dataset_docs_public.json --k 10
 ```
 
 ## Resources
